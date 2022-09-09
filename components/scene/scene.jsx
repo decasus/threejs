@@ -1,12 +1,3 @@
-/*
-    Результатом должна являтся страница со сценой, на которой фог и куб с материалом
-    без восприимчивости к свету и кастомным шейдером, в котором цвет высчитывается относительно позиции вершины и времени.
-    Импорт theejs должен быть динамический при подключении компонента со сценой
-    При клике на куб он должен анимированно повернуться в случайно
-    выбранной оси на случайную величину
-    После удаления компонента, сцена должна уничтожиться
-*/
-
 import * as THREE from 'three';
 
 import {useEffect, useRef} from "react";
@@ -16,6 +7,7 @@ const SceneComponent = () => {
     const mount = useRef(null);
 
     useEffect(() => {
+
         let frameId;
         let pos = 0;
         let axis = 0;
@@ -97,7 +89,8 @@ const SceneComponent = () => {
         return () => {
             cancelAnimationFrame(frameId);
             frameId = null;
-            window.removeEventListener("resize", handleResize)
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener("click", handleResize);
             mount.current.removeChild(renderer.domElement);
             scene.remove(cube);
             geometry.dispose();
