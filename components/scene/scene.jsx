@@ -4,13 +4,17 @@ const Scene = () => {
 
     const mount = useRef(null);
 
+
     useEffect(() => {
+        let scene;
+
         import("./src/Scene.js").then(({default: Scene}) => {
-            Scene.init(mount);
+            scene = Scene;
+            scene.init(mount);
         })
 
         return () => {
-            // TODO Уничтожить сцену
+            scene.destroy();
         }
     }, [])
 

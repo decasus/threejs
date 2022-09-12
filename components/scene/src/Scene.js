@@ -4,11 +4,12 @@ import {fragmentShader} from './shaders/fragment';
 
 const axes = ['x', 'y', 'z'];
 
-export default class Scene {
+class Scene {
 
-    static init = (mount) => {
- // TODO Экзепмляр на экспорт
+    init = (mount) => {
+
         this.mount = mount;
+
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.Fog(0x1c1c1c, 1, 2);
         this.scene.background = new THREE.Color(0x1c1c1c);
@@ -50,14 +51,14 @@ export default class Scene {
         this.render();
     }
 
-    static render = () =>  {
+    render = () => {
         const {uniforms, renderer, scene, camera} = this;
         uniforms.time.value += 0.01;
         renderer.render(scene, camera);
         this.frameId = requestAnimationFrame(this.render);
     }
 
-    static animate = () => {
+    animate = () => {
         const {cube} = this;
         if (cube.rotation[axes[this.axis]] < this.pos) {
             cube.rotation[axes[this.axis]] += 0.05;
@@ -65,14 +66,14 @@ export default class Scene {
         }
     }
 
-    static handleResize = () => {
+    handleResize = () => {
         const {renderer, camera, mount} = this;
         renderer.setSize(mount.current.clientWidth, mount.current.clientHeight);
         camera.aspect = mount.current.clientWidth / mount.current.clientHeight;
         camera.updateProjectionMatrix();
     }
 
-    static handleClick = (event) => {
+    handleClick = (event) => {
         const {mouse, renderer, raycaster, camera, cube, scene} = this;
         event.preventDefault();
         mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -86,7 +87,7 @@ export default class Scene {
         }
     }
 
-    static destroy = () => {
+    destroy = () => {
         const {mount, scene, renderer, cube, geometry, material} = this;
         cancelAnimationFrame(this.frameId);
         this.frameId = null;
@@ -99,3 +100,5 @@ export default class Scene {
     }
 
 }
+
+export default new Scene();
