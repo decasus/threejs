@@ -4,7 +4,6 @@ const Scene = () => {
 
     const mount = useRef(null);
 
-
     useEffect(() => {
         let scene;
 

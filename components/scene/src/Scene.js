@@ -7,7 +7,7 @@ const axes = ['x', 'y', 'z'];
 class Scene {
 
     init = (mount) => {
-
+        this.animationList = [];
         this.mount = mount;
 
         this.scene = new THREE.Scene();
@@ -52,25 +52,15 @@ class Scene {
     }
 
     render = () => {
-        const {uniforms, renderer, scene, camera} = this;
+        const {uniforms, renderer, scene, camera, cube} = this;
         uniforms.time.value += 0.01;
+        this.animationList.forEach(([axis, pos], index) => {
+            if (cube.rotation[axes[axis]] < pos)
+                cube.rotation[axes[axis]] += 0.05;
+            else this.animationList.splice(index, 1);
+        });
         renderer.render(scene, camera);
         this.frameId = requestAnimationFrame(this.render);
-    }
-
-    animate = () => {
-        const {cube} = this;
-        if (cube.rotation[axes[this.axis]] < this.pos) {
-            cube.rotation[axes[this.axis]] += 0.05;
-            this.frameId = requestAnimationFrame(this.animate); // TODO Поворот кубика
-        }
-    }
-
-    handleResize = () => {
-        const {renderer, camera, mount} = this;
-        renderer.setSize(mount.current.clientWidth, mount.current.clientHeight);
-        camera.aspect = mount.current.clientWidth / mount.current.clientHeight;
-        camera.updateProjectionMatrix();
     }
 
     handleClick = (event) => {
@@ -81,10 +71,17 @@ class Scene {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
-            this.axis = Math.floor(Math.random() * 3);
-            this.pos = THREE.MathUtils.randFloat(cube.rotation[axes[this.axis]] + 1, cube.rotation[axes[this.axis]] + 2);
-            this.animate();
+            const axis = Math.floor(Math.random() * 3);
+            const pos = THREE.MathUtils.randFloat(cube.rotation[axes[axis]] + 1, cube.rotation[axes[axis]] + 2);
+            this.animationList.push([axis, pos]);
         }
+    }
+
+    handleResize = () => {
+        const {renderer, camera, mount} = this;
+        renderer.setSize(mount.current.clientWidth, mount.current.clientHeight);
+        camera.aspect = mount.current.clientWidth / mount.current.clientHeight;
+        camera.updateProjectionMatrix();
     }
 
     destroy = () => {
@@ -98,7 +95,6 @@ class Scene {
         geometry.dispose();
         material.dispose();
     }
-
 }
 
 export default new Scene();
