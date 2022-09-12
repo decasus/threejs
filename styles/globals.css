@@ -16,3 +16,10 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.mount {
+  width: 100vw;
+  height: 100vh;
+}
+
+
