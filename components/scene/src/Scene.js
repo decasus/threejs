@@ -7,7 +7,7 @@ const axes = ['x', 'y', 'z'];
 export default class Scene {
 
     static init = (mount) => {
-
+ // TODO Экзепмляр на экспорт
         this.mount = mount;
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.Fog(0x1c1c1c, 1, 2);
@@ -61,12 +61,12 @@ export default class Scene {
         const {cube} = this;
         if (cube.rotation[axes[this.axis]] < this.pos) {
             cube.rotation[axes[this.axis]] += 0.05;
-            this.frameId = requestAnimationFrame(this.animate);
+            this.frameId = requestAnimationFrame(this.animate); // TODO Поворот кубика
         }
     }
 
     static handleResize = () => {
-        const {renderer, camera, mount} = this
+        const {renderer, camera, mount} = this;
         renderer.setSize(mount.current.clientWidth, mount.current.clientHeight);
         camera.aspect = mount.current.clientWidth / mount.current.clientHeight;
         camera.updateProjectionMatrix();
