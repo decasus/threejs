@@ -55,9 +55,9 @@ class Scene {
         const {uniforms, renderer, scene, camera, cube} = this;
         uniforms.time.value += 0.01;
         this.animationList.forEach(([axis, pos], index) => {
-            if (cube.rotation[axes[axis]] < pos)
+            if (cube.rotation[axes[axis]] < pos) {
                 cube.rotation[axes[axis]] += 0.05;
-            else this.animationList.splice(index, 1);
+            } else this.animationList.splice(index, 1);
         });
         renderer.render(scene, camera);
         this.frameId = requestAnimationFrame(this.render);
