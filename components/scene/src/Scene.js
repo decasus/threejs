@@ -38,13 +38,16 @@ class Scene {
         });
 
         this.cube = new THREE.Mesh(this.geometry, this.material);
+        this.prevRotation = this.cube.rotation.clone();
 
         this.scene.add(this.cube);
-        this.cube.rotation.x = 0.5;
-        this.cube.rotation.y = 0.5;
+        //this.cube.rotation.x = 0.5;
+        //this.cube.rotation.y = 0.5;
 
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
+
+        this.clock = new THREE.Clock();
 
         window.addEventListener("resize", this.handleResize);
         window.addEventListener("click", this.handleClick);
@@ -54,11 +57,16 @@ class Scene {
     render = () => {
         const {uniforms, renderer, scene, camera, cube} = this;
         uniforms.time.value += 0.01;
-        this.animationList.forEach(([axis, pos], index) => {
-            if (cube.rotation[axes[axis]] < pos) {
-                cube.rotation[axes[axis]] += 0.05;
-            } else this.animationList.splice(index, 1);
+
+        //const delta = this.clock.getDelta();
+
+
+        ['x', 'y', 'z'].forEach((axis) => {
+            if (cube.rotation[axis] < this.prevRotation[axis]) {
+                cube.rotation[axis] += 0.01
+            }
         });
+
         renderer.render(scene, camera);
         this.frameId = requestAnimationFrame(this.render);
     }
@@ -72,8 +80,7 @@ class Scene {
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
             const axis = Math.floor(Math.random() * 3);
-            const pos = THREE.MathUtils.randFloat(cube.rotation[axes[axis]] + 1, cube.rotation[axes[axis]] + 2);
-            this.animationList.push([axis, pos]);
+            this.prevRotation[axes[axis]] += Math.PI / 2;
         }
     }
 
