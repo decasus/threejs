@@ -7,7 +7,6 @@ const axes = ['x', 'y', 'z'];
 class Scene {
 
     init = (mount) => {
-        this.animationList = [];
         this.mount = mount;
 
         this.scene = new THREE.Scene();
@@ -41,13 +40,12 @@ class Scene {
         this.prevRotation = this.cube.rotation.clone();
 
         this.scene.add(this.cube);
+
         //this.cube.rotation.x = 0.5;
         //this.cube.rotation.y = 0.5;
 
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
-
-        this.clock = new THREE.Clock();
 
         window.addEventListener("resize", this.handleResize);
         window.addEventListener("click", this.handleClick);
@@ -58,12 +56,10 @@ class Scene {
         const {uniforms, renderer, scene, camera, cube} = this;
         uniforms.time.value += 0.01;
 
-        //const delta = this.clock.getDelta();
-
-
-        ['x', 'y', 'z'].forEach((axis) => {
+        axes.forEach((axis) => {
             if (cube.rotation[axis] < this.prevRotation[axis]) {
-                cube.rotation[axis] += 0.01
+                const diff = this.prevRotation[axis] - cube.rotation[axis];
+                cube.rotation[axis] += (diff < 0.05) ? diff : 0.05;
             }
         });
 
@@ -72,7 +68,7 @@ class Scene {
     }
 
     handleClick = (event) => {
-        const {mouse, renderer, raycaster, camera, cube, scene} = this;
+        const {mouse, renderer, raycaster, camera, scene} = this;
         event.preventDefault();
         mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
         mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
